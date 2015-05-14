@@ -117,7 +117,7 @@ public class Worker extends Thread {
 		Utils.println("线程"+name+"开始向客户端传输文件"+fileName);
 		this.socketWrapper.write(srcFile.length());
 		this.socketWrapper.writeFromFile(srcFile);
-		socketWrapper.write(1);//表示传输完毕
+		this.socketWrapper.write(1);//表示传输完毕
 		Utils.println("线程"+name+"向客户端传送文件"+fileName+"完毕");
 	}
 	/**

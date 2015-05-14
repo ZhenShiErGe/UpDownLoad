@@ -132,8 +132,10 @@ public class SocketWrapper implements Closeable {
 			int length=fileInputStream.read(fileBytes);
 			sendedLength=sendedLength+length;
 			this.write(fileBytes, length);
-			if(temp%20==0)
+			if(temp==0)
 				Utils.println("已经传输");
+			if(temp%10==0)
+				Utils.println("");
 			this.showUploadStatus(sendedLength, fileLength);
 			temp++;
 		}
