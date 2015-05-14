@@ -95,6 +95,9 @@ public class SocketWrapper implements Closeable {
 	public int read(byte []bytes) throws IOException {
 		return this.inputStream.read(bytes);
 	}
+	public void read(byte []bytes , int length) throws IOException {
+		this.inputStream.read(bytes, 0, length);
+	}
 	/**
 	 * 从流中读取指定长度，并按照指定的编码类型转换为String类型
 	 * @param length
@@ -159,19 +162,27 @@ public class SocketWrapper implements Closeable {
 		}
 		FileOutputStream fileOutputStream = new FileOutputStream(destFile);
 		int pagesize =Properties.PAGE_SIZE;
-		long acceptedLength=0;
 		int temp=0;//标记换行
 		byte [] fileBytes=new byte[pagesize];
-		while(acceptedLength<destFileLength){
-				int length=this.read(fileBytes);
-				acceptedLength=acceptedLength+length;
-				fileOutputStream.write(fileBytes, 0, length);
-				if(temp==0)
-					Utils.println("已经传输");
-				if(temp%10==0)
-					Utils.println("");
-				this.showUploadStatus(acceptedLength, destFileLength);
-				temp++;
+		long remainLength=destFileLength;
+		while(remainLength>0){
+			if(remainLength>pagesize){
+				this.readFull(fileBytes);
+				remainLength=remainLength-pagesize;
+				fileOutputStream.write(fileBytes, 0,pagesize);
+			}
+			else{
+				int length=(int)remainLength;
+				this.read(fileBytes,length);
+				remainLength=0;
+				fileOutputStream.write(fileBytes, 0,pagesize);
+			}
+			if(temp==0)
+				Utils.println("已经传输");
+			if(temp%10==0)
+				Utils.println("");
+			this.showUploadStatus(destFileLength-remainLength, destFileLength);
+			temp++;
 			}
 		fileOutputStream.close();
 	}
