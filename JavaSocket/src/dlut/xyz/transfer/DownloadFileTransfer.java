@@ -58,6 +58,7 @@ public class DownloadFileTransfer implements Transferable{
 			long fileLength=socketWrapper.readLong();
 			socketWrapper.readToFile(new File(this.fileDir+this.remoteFileName),fileLength);
 			int result=socketWrapper.readInt();
+			Utils.println("结果："+result);
 			if(result==1)
 				Utils.println("下载完毕");
 			else

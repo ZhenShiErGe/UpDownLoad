@@ -127,19 +127,27 @@ public class SocketWrapper implements Closeable {
 		
 		int pagesize =Properties.PAGE_SIZE;
 	    long fileLength=srcFile.length();
-		long sendedLength=0;
 	    int temp=0;//标记换行
 	    byte [] fileBytes=new byte[pagesize]; 
-	   
-		while(sendedLength<fileLength){
-			int length=fileInputStream.read(fileBytes);
-			sendedLength=sendedLength+length;
-			this.write(fileBytes, length);
+	    long remainLength=fileLength;
+	    int length=0;
+		while(remainLength>0){
+			if(remainLength>pagesize){
+				length=fileInputStream.read(fileBytes, 0, pagesize);
+				this.write(fileBytes, length);
+				remainLength=-length;
+			}
+			else{
+				length=fileInputStream.read(fileBytes, 0, (int)remainLength);
+				this.write(fileBytes, length);
+				remainLength=-length;
+			}
+			
 			if(temp==0)
 				Utils.println("已经传输");
 			if(temp%10==0)
 				Utils.println("");
-			this.showUploadStatus(sendedLength, fileLength);
+			this.showUploadStatus(fileLength-remainLength, fileLength);
 			temp++;
 		}
 		fileInputStream.close();
