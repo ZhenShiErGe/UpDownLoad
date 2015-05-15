@@ -135,13 +135,13 @@ public class SocketWrapper implements Closeable {
 			if(remainLength>pagesize){
 				fileInputStream.read(fileBytes, 0, pagesize);
 				this.write(fileBytes, pagesize);
-				remainLength=-pagesize;
+				remainLength=remainLength-pagesize;
 			}
 			else{
 				int remain=(int)remainLength;
 				fileInputStream.read(fileBytes, 0,remain);
 				this.write(fileBytes,remain);
-				remainLength=-remain;
+				remainLength=remainLength-remain;
 			}
 			if(temp==0)
 				Utils.println("已经传输");
