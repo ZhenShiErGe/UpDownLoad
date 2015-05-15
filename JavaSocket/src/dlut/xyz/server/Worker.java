@@ -26,7 +26,7 @@ public class Worker extends Thread {
 				if(this.isInterrupted()) 
 					break;
 				byte type = socketWrapper.readByte();
-				if(TransferTypeEnum.DEFAULT.getTransferTypeByte()==type){
+				if(TransferTypeEnum.HELP.getTransferTypeByte()==type){
 					processDefault();
 				}
 				else if(TransferTypeEnum.MESSAGE.getTransferTypeByte() == type){
@@ -62,7 +62,7 @@ public class Worker extends Thread {
 	 * @throws IOException
 	 */
 	private void processDefault() throws IOException {
-		Utils.println("收到来自客户端的空请求");
+		Utils.println("收到来自客户端的help请求");
 	}
 	/**
 	 * 处理消息传送的方法
@@ -82,6 +82,7 @@ public class Worker extends Thread {
 		//读取文件名字的长度
 		int fileNameLength=socketWrapper.readInt();
 		//读取文件名字
+		Utils.println(fileNameLength+"********");
 		byte[] fileNameBytes=new byte[fileNameLength];
 		socketWrapper.readFull(fileNameBytes);
 		String fileName=new String(fileNameBytes,CharsetEnum.UTF8.getCharsetName());

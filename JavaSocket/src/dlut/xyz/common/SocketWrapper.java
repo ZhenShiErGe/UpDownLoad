@@ -117,12 +117,6 @@ public class SocketWrapper implements Closeable {
 	 */
 	public void writeFromFile(File srcFile) throws FileNotExistsException,FileNoAuthorityException,IOException{
 		
-       if(!srcFile.exists()){
-		  throw new FileNotExistsException(srcFile.getAbsolutePath());	
-		}
-		if(!srcFile.canRead()){
-			throw new FileNoAuthorityException(srcFile.getAbsolutePath());
-		}
 		FileInputStream fileInputStream = new FileInputStream(srcFile);
 		
 		int pagesize =Properties.PAGE_SIZE;
@@ -154,36 +148,21 @@ public class SocketWrapper implements Closeable {
 	 */
 	public void readToFile(File destFile,long destFileLength) throws FileNotExistsException,FileNoAuthorityException,IOException{
 		
-		if(!destFile.exists()){
-			if(!destFile.createNewFile())
-				throw new FileNotExistsException(destFile.getAbsolutePath());
-		}
-		if(!destFile.canWrite()){
-			throw new FileNoAuthorityException(destFile.getAbsolutePath());
-		}
-		
 		FileOutputStream fileOutputStream = new FileOutputStream(destFile);
-		int pagesize =Properties.PAGE_SIZE;
+		int buffersize =Properties.BUFFER_SIZE;
 		int temp=0;//标记换行
-		byte [] fileBytes=new byte[pagesize];
-		long remainLength=destFileLength;
-		while(remainLength>0){
-			if(remainLength>=pagesize){
-				this.readFull(fileBytes);
-				remainLength=remainLength-pagesize;
-				fileOutputStream.write(fileBytes, 0,pagesize);
-			}
-			else{
-				int length=(int)remainLength;
-				this.read(fileBytes,length);
-				remainLength=remainLength-(long)length;
-				fileOutputStream.write(fileBytes, 0,length);
-			}
+		byte [] fileBytes=new byte[buffersize];
+		long acceptedLength=0;
+		
+		while(acceptedLength<destFileLength){
+			int length=this.read(fileBytes);
+			acceptedLength=acceptedLength+length;
+			fileOutputStream.write(fileBytes, 0, length);
 			if(temp==0)
 				Utils.println("已经传输");
 			if(temp%10==0)
 				Utils.println("");
-			this.showUploadStatus(destFileLength-remainLength, destFileLength);
+			this.showUploadStatus(acceptedLength, destFileLength);
 			temp++;
 			}
 		fileOutputStream.close();

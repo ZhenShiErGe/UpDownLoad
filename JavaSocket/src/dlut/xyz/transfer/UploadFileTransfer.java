@@ -65,14 +65,15 @@ public class UploadFileTransfer implements Transferable{
 	    Utils.println("我此时向服务器端上传文件：" +fileName);
 		socketWrapper.write(fileNameLength);//发送文件名字长度
 		socketWrapper.write(fileNameBytes);//发送文件名字内容
-		if(socketWrapper.readInt()!=1)
+		int status = socketWrapper.readInt();
+		if(status!=1)
 			throw new ServerException("上传功能");
 		socketWrapper.write(fileLength);//发送文件长度
 		socketWrapper.writeFromFile(new File(filePath));//发送文件内容
-		int status=socketWrapper.readInt();
-		if(status!=1)
-			Utils.print("文件上传失败");
+		status=socketWrapper.readInt();
+		if(status==1)
+			Utils.println("文件上传成功");
 		else
-			Utils.println("文件上传成功。");
+			Utils.println("文件上传失败");
 	}
 }

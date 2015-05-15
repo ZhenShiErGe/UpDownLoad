@@ -2,6 +2,7 @@ package dlut.xyz.client;
 import java.io.IOException;
 import java.util.Scanner;
 
+import dlut.xyz.common.Properties;
 import dlut.xyz.common.SocketWrapper;
 import dlut.xyz.common.Utils;
 import dlut.xyz.exception.InputNotExistsException;
@@ -11,8 +12,10 @@ public class ClientMain {
 	public static void main(String []args){
 		Scanner scanner = new Scanner(System.in);
 		try{	
-				SocketWrapper socketWrapper = new SocketWrapper("192.168.0.83" , 8888);
-		        Utils.print("已经连接上服务器端，现在可以输入数据开始通信了.....\n>");
+				SocketWrapper socketWrapper = new SocketWrapper("localhost" , 8888);
+		        Utils.println("已经连接上服务器端，现在可以输入数据开始通信了.....");
+		        Utils.println(Properties.HELP);
+		        Utils.print(">");
 					String line = scanner.nextLine();
 					while(!"bye".equals(line)) {
 						if(line != null) {
@@ -26,10 +29,10 @@ public class ClientMain {
 			Utils.println(e.getMessage());
 			e.printStackTrace();
 		}catch(ServerException e){
-			//Utils.println(e.getMessage());
+			Utils.println(e.getMessage());
 			e.printStackTrace();
 		}catch(InputNotExistsException e){
-			//Utils.println(e.getMessage());
+			Utils.println(e.getMessage());
 			e.printStackTrace();
 		}
 		finally{

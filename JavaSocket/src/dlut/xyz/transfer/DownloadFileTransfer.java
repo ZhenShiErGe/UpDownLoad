@@ -8,7 +8,6 @@ import dlut.xyz.common.CharsetEnum;
 import dlut.xyz.common.SocketWrapper;
 import dlut.xyz.common.TransferTypeEnum;
 import dlut.xyz.common.Utils;
-import dlut.xyz.exception.FileCreateException;
 import dlut.xyz.exception.FileNotExistsException;
 import dlut.xyz.exception.ParamNotExistsException;
 import dlut.xyz.exception.ServerException;
@@ -17,16 +16,18 @@ public class DownloadFileTransfer implements Transferable{
 	
 	private String remoteFileName;//要下载的文件名称
 	private String fileDir;//下载的文件保存的路径
-	public DownloadFileTransfer(String [] tokens) throws ParamNotExistsException{
+	public DownloadFileTransfer(String [] tokens) throws FileNotExistsException,ParamNotExistsException{
 			if(tokens.length>=3){
-				remoteFileName=tokens[1];
-				fileDir=tokens[2];
-				if(!Utils.fileExists(fileDir)){
-					File file=new File(fileDir);
-					if(!file.mkdirs())
-						throw new FileCreateException(fileDir);
+			    //判断给出的文件夹是否存在
+				File dir=new File(tokens[2]);
+				if(dir.exists()&&dir.isDirectory()){
+					fileDir=tokens[2];
+					if(!fileDir.endsWith(File.separator))
+						fileDir=fileDir+File.separator;
+					remoteFileName=tokens[1];
+				}else{
+					throw new FileNotExistsException(tokens[2]);
 				}
-				
 			}
 			else{
 				Utils.println("请在后面填写文件名称以及保存路径");
@@ -56,7 +57,8 @@ public class DownloadFileTransfer implements Transferable{
 		if(status==1){
 			//正常传输文件
 			long fileLength=socketWrapper.readLong();
-			socketWrapper.readToFile(new File(this.fileDir+this.remoteFileName),fileLength);
+			File file=new File(this.fileDir+this.remoteFileName);
+			socketWrapper.readToFile(file,fileLength);
 			Utils.println("下载完毕");
 			socketWrapper.write(1);
 		}

@@ -17,7 +17,7 @@ public class LineProcessor {
 		String  transferTypeName=null;
 		if(line.trim().length() == 0) {
 			tokens=new String[] {"",""};
-			transferTypeName="default";
+			transferTypeName="help";
 		}
 		else{
 			tokens = line.trim().split("\\s+");

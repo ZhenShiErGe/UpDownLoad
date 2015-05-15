@@ -7,10 +7,10 @@ import dlut.xyz.transfer.Transferable;
 import dlut.xyz.transfer.UploadFileTransfer;
 
 public enum TransferTypeEnum {
-	DEFAULT("default",(byte)0,DefaultTransfer.class),
+	HELP("help",(byte)0,DefaultTransfer.class),
    MESSAGE("message",(byte)1,MessageTransfer.class),
-   UPLOADFILE("uploadfile",(byte)2,UploadFileTransfer.class),
-   DOWNLOADFILE("downloadfile",(byte)3,DownloadFileTransfer.class);
+   UPLOADFILE("upload",(byte)2,UploadFileTransfer.class),
+   DOWNLOADFILE("download",(byte)3,DownloadFileTransfer.class);
   
 	private String transferTypeName;
 	private byte transferTypeByte;

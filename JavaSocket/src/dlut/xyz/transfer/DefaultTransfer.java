@@ -3,13 +3,14 @@ package dlut.xyz.transfer;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import dlut.xyz.common.Properties;
 import dlut.xyz.common.SocketWrapper;
 import dlut.xyz.common.TransferTypeEnum;
 import dlut.xyz.common.Utils;
 import dlut.xyz.exception.ParamNotExistsException;
 
 public class DefaultTransfer implements Transferable{
-	private String message="\n发送消息使用message  上传文件使用uploadfile  下载文件使用downloadfile";
+	private String message=Properties.HELP;
 	public DefaultTransfer(String [] tokens) throws  ParamNotExistsException,UnsupportedEncodingException{
 		Utils.println(message);
 	}
@@ -20,7 +21,7 @@ public class DefaultTransfer implements Transferable{
 	 */
 	@Override
 	public TransferTypeEnum getTransferType(){
-		return TransferTypeEnum.DEFAULT;
+		return TransferTypeEnum.HELP;
 	}
 	/**
 	 * 进行传输
