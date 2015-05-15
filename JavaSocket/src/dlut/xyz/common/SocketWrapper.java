@@ -127,29 +127,22 @@ public class SocketWrapper implements Closeable {
 		
 		int pagesize =Properties.PAGE_SIZE;
 	    long fileLength=srcFile.length();
+	    long acceptedLength=0;
 	    int temp=0;//标记换行
 	    byte [] fileBytes=new byte[pagesize]; 
-	    long remainLength=fileLength;
-	  
-		while(remainLength>0){
-			if(remainLength>pagesize){
-				fileInputStream.read(fileBytes, 0, pagesize);
-				this.write(fileBytes, pagesize);
-				remainLength=remainLength-pagesize;
-			}
-			else{
-				int remain=(int)remainLength;
-				fileInputStream.read(fileBytes, 0,remain);
-				this.write(fileBytes,remain);
-				remainLength=remainLength-remain;
-			}
-			if(temp==0)
+	    int length=fileInputStream.read(fileBytes);
+	    while(length>0){
+		  this.write(fileBytes,length);
+		  acceptedLength=acceptedLength+(long)length;
+		  length=fileInputStream.read(fileBytes);
+		  //显示传输状态
+		  if(temp==0)
 				Utils.println("已经传输");
-			if(temp%10==0)
+		  if(temp%10==0)
 				Utils.println("");
-			this.showUploadStatus(fileLength-remainLength, fileLength);
+		  this.showUploadStatus(acceptedLength, fileLength);
 			temp++;
-		}
+	   }
 		fileInputStream.close();
 	}
 	/**
@@ -168,13 +161,14 @@ public class SocketWrapper implements Closeable {
 		if(!destFile.canWrite()){
 			throw new FileNoAuthorityException(destFile.getAbsolutePath());
 		}
+		
 		FileOutputStream fileOutputStream = new FileOutputStream(destFile);
 		int pagesize =Properties.PAGE_SIZE;
 		int temp=0;//标记换行
 		byte [] fileBytes=new byte[pagesize];
 		long remainLength=destFileLength;
 		while(remainLength>0){
-			if(remainLength>pagesize){
+			if(remainLength>=pagesize){
 				this.readFull(fileBytes);
 				remainLength=remainLength-pagesize;
 				fileOutputStream.write(fileBytes, 0,pagesize);
@@ -182,8 +176,8 @@ public class SocketWrapper implements Closeable {
 			else{
 				int length=(int)remainLength;
 				this.read(fileBytes,length);
-				remainLength=0;
-				fileOutputStream.write(fileBytes, 0,pagesize);
+				remainLength=remainLength-(long)length;
+				fileOutputStream.write(fileBytes, 0,length);
 			}
 			if(temp==0)
 				Utils.println("已经传输");

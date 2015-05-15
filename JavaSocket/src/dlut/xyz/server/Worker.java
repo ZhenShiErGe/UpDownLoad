@@ -117,8 +117,12 @@ public class Worker extends Thread {
 		Utils.println("线程"+name+"开始向客户端传输文件"+fileName);
 		this.socketWrapper.write(srcFile.length());
 		this.socketWrapper.writeFromFile(srcFile);
-		this.socketWrapper.write(1);//表示传输完毕
-		Utils.println("线程"+name+"向客户端传送文件"+fileName+"完毕");
+		int status=this.socketWrapper.readInt();
+		if(status==1)
+			Utils.println("线程"+name+"向客户端传送文件"+fileName+"完毕");
+		else{
+			Utils.println("传输失败");
+		}
 	}
 	/**
 	 * 根据时间戳创建唯一的文件

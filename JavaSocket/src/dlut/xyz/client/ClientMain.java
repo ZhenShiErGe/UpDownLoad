@@ -11,7 +11,7 @@ public class ClientMain {
 	public static void main(String []args){
 		Scanner scanner = new Scanner(System.in);
 		try{	
-				SocketWrapper socketWrapper = new SocketWrapper("localhost" , 8888);
+				SocketWrapper socketWrapper = new SocketWrapper("192.168.0.83" , 8888);
 		        Utils.print("已经连接上服务器端，现在可以输入数据开始通信了.....\n>");
 					String line = scanner.nextLine();
 					while(!"bye".equals(line)) {

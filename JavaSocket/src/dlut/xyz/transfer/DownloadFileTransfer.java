@@ -57,12 +57,8 @@ public class DownloadFileTransfer implements Transferable{
 			//正常传输文件
 			long fileLength=socketWrapper.readLong();
 			socketWrapper.readToFile(new File(this.fileDir+this.remoteFileName),fileLength);
-			int result=socketWrapper.readInt();
-			Utils.println("结果："+result);
-			if(result==1)
-				Utils.println("下载完毕");
-			else
-				throw new ServerException("下载功能");
+			Utils.println("下载完毕");
+			socketWrapper.write(1);
 		}
 		else if(status==-1){
 			throw new FileNotExistsException(this.remoteFileName);
